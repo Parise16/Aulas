@@ -1,0 +1,93 @@
+int vas = A5;
+long cm;
+float valordaforca[] = {0,0};
+float desisto;
+int forca=A1;
+int flex = A2;
+  int flexp;
+int SensorTempPino = A4;
+
+const int pinoSensor = A0; //PINO UTILIZADO PELO SENSOR
+int valorLido; //VARIÁVEL QUE ARMAZENA O PERCENTUAL DE UMIDADE DO SOLO
+ 
+
+
+  #define pino_trigger 4
+  #define pino_echo 5
+
+void setup()
+{
+  pinMode(forca, INPUT);
+    Serial.begin(9600);
+  pinMode(vas, INPUT);
+  pinMode(flex, INPUT);
+  pinMode(pinoSensor, INPUT);
+}
+void loop()
+{  
+  desisto = analogRead(forca);
+  flexp = analogRead(flex);
+          valorLido = analogRead(pinoSensor);
+int SensorTempTensao=analogRead(SensorTempPino);
+
+  	// Converte a tensao lida
+	float Tensao=SensorTempTensao*5;
+	Tensao/=1024;
+	float TemperaturaC=(Tensao-0.5)*100;
+	float TemperaturaF=(TemperaturaC*9/5)+32;
+   long cm = 0.01723 * readUltrasonicDistance(4, 5);
+  vas = analogRead(A5);
+  forca = analogRead(A0);
+  Serial.print("valor = ");
+    Serial.println(vas);
+	delay(1000);  
+if(vas==1023)
+  {
+  Serial.print("distancia em cm:");
+Serial.println(cm);
+    delay(1000);
+  
+  } else if(vas==511){
+  Serial.print ("forca: ");
+     Serial.println(desisto);
+    delay(10); 
+  
+} else if(vas == 341)    {
+Serial.print("forca flexivel: ");
+  Serial.println(flexp);
+  delay(100);
+  
+} else  if(vas==256)
+  {
+ Serial.print("Umidade do solo: "); //IMPRIME O TEXTO NO MONITOR SERIAL
+ Serial.print(valorLido); //IMPRIME NO MONITOR SERIAL O PERCENTUAL DE UMIDADE DO SOLO
+ Serial.println("%"); //IMPRIME O CARACTERE NO MONITOR SERIAL
+ delay(1000);  //INTERVALO DE 1 SEGUNDO
+
+  }
+   else if(vas==205)
+    {
+            Serial.print("temperatura em F: ");
+    Serial.println(TemperaturaF);
+                 Serial.print("temperatura em C: ");
+  Serial.println(TemperaturaC); 
+
+    }
+  delay(100);;
+   // if(val==256);
+	
+
+}
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigger pin to HIGH state for 10 microseconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  // Reads the echo pin, and returns the sound wave travel time in microseconds
+  return pulseIn(echoPin, HIGH);
+}
